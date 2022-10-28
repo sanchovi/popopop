@@ -36,7 +36,7 @@ class KernelSimulator {
                 continue
             var kernel: Kernel = kernelOpt!!
 
-            kernel.velocity += Vector2(0f, Kernel.GRAVITY)
+            kernel.velocity += Vector2(0f, Kernel.GRAVITY) * dt
             kernel.position += kernel.velocity * dt
         }
 
