@@ -27,30 +27,39 @@ class MainActivity : AppCompatActivity() {
 
         container = findViewById<FrameLayout>(R.id.frameLayout)
 
-        simulator = KernelSimulator()
-        simulator.addKernel(createKernelView())
-        simulator.addKernel(createKernelView())
-        simulator.addKernel(createKernelView())
+    }
 
-        var previousMillis: Long = System.currentTimeMillis()
-        GlobalScope.launch {
-            isRunning = true
+    override fun onStart() {
+        super.onStart()
 
-            while (isRunning) {
-                var currentMillis: Long = System.currentTimeMillis()
-                var dtMillis: Long = currentMillis - previousMillis
-                if (dtMillis > 67)
-                    dtMillis = 67
-                var previousMillis = currentMillis
+        container.post(Runnable{
+            val minPoint = Vector2(container.x, container.y)
+            val maxPoint = Vector2(container.x + container.width, container.y + container.height)
+            simulator = KernelSimulator(minPoint, maxPoint)
+            //for(i in 1..25){
+                simulator.addKernel(createKernelView())
+            //}
 
-                simulator.simulate(dtMillis / 1000.0f)
+            var previousMillis: Long = System.currentTimeMillis()
+            GlobalScope.launch {
+                isRunning = true
 
-                currentMillis = System.currentTimeMillis()
-                var desiredWaitTime: Long = 16 - (currentMillis - previousMillis)
-                if (desiredWaitTime > 0)
-                    delay(desiredWaitTime)
+                while (isRunning) {
+                    var currentMillis: Long = System.currentTimeMillis()
+                    var dtMillis: Long = currentMillis - previousMillis
+                    if (dtMillis > 67)
+                        dtMillis = 67
+                    var previousMillis = currentMillis
+
+                    simulator.simulate(dtMillis / 1000.0f)
+
+                    currentMillis = System.currentTimeMillis()
+                    var desiredWaitTime: Long = 16 - (currentMillis - previousMillis)
+                    if (desiredWaitTime > 0)
+                        delay(desiredWaitTime)
+                }
             }
-        }
+        })
     }
 
     fun createKernelView() : View
