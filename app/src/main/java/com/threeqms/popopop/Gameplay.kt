@@ -1,26 +1,24 @@
 package com.threeqms.popopop
 
 import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
-import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 
-
-class MainActivity : AppCompatActivity() {
+class Gameplay : AppCompatActivity() {
 
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_gameplay)
 
-        val b1 = findViewById<View>(R.id.start_button)
+        val b1 = findViewById<View>(R.id.shop_button)
 
         b1.setOnClickListener {
-            val game = Intent(this@MainActivity, Gameplay::class.java)
-            startActivity(game)
+            val shop = Intent(this@Gameplay, Shop::class.java)
+            startActivity(shop)
         }
 
 
