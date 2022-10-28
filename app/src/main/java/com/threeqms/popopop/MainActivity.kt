@@ -21,10 +21,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        inflater = applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         binding = ActivityMainBinding.inflate(inflater)
         setContentView(binding.root)
 
-        inflater = applicationContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         container = findViewById<FrameLayout>(R.id.frameLayout)
 
         simulator = KernelSimulator()
