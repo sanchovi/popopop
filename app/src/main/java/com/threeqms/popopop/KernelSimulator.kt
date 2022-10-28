@@ -1,13 +1,15 @@
 package com.threeqms.popopop
 
+import android.view.View
 import java.util.*
 
 class KernelSimulator {
-    val kernels: MutableList<KernelFragment?> = mutableListOf()
+    val kernels: MutableList<Kernel?> = mutableListOf()
     val freeIds: Queue<Int> = LinkedList<Int>(listOf())
 
-    fun addKernel(): KernelFragment {
-        val kernel = KernelFragment(Vector2(), 10f)
+    fun addKernel(kernelView: View): Kernel {
+        val kernel = Kernel(Vector2(), 10f, kernelView)
+
         if (!freeIds.isEmpty()) {
             val id: Int = freeIds.poll()
             kernels[id] = kernel;
@@ -32,10 +34,15 @@ class KernelSimulator {
         for (kernelOpt in kernels) {
             if (kernelOpt == null)
                 continue
-            var kernel: KernelFragment = kernelOpt!!
+            var kernel: Kernel = kernelOpt!!
+
+            kernel.velocity += Vector2(0f, Kernel.GRAVITY)
             kernel.position += kernel.velocity * dt
         }
 
         // TODO update the positions and rotations of the views
+        for (kernelOpt in kernels) {
+            kernelOpt?.updateView()
+        }
     }
 }

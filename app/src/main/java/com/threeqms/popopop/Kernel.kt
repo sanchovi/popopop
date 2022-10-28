@@ -1,8 +1,17 @@
 package com.threeqms.popopop
 
-import androidx.fragment.app.Fragment
+import android.view.View
+import kotlin.math.roundToInt
 
-class KernelFragment(pos : Vector2, r : Float) : Fragment() {
+class Kernel(pos : Vector2, r : Float, v : View) {
+
+    companion object {
+        val GRAVITY = 9.81f
+        val ELASTICITY = 0.9f
+    }
+    
+    val view : View = v
+
     val position : Vector2 = pos
     val rotation : Float = 0f
     val radius : Float = r
@@ -11,8 +20,16 @@ class KernelFragment(pos : Vector2, r : Float) : Fragment() {
     val popProgress : Float = 0f
     val mass : Float = 1f
 
-    companion object {
-        val gravity = 9.81f
-        val elasticity = 0.9f
+    init {
+        updateView()
+    }
+
+    fun updateView()
+    {
+        view.layoutParams.width = radius.roundToInt()
+        view.layoutParams.height = radius.roundToInt()
+        view.x = (position.x - radius / 2f)
+        view.y = (position.y - radius / 2f)
+        view.rotation = rotation
     }
 }
