@@ -36,9 +36,9 @@ class MainActivity : AppCompatActivity() {
             val minPoint = Vector2(container.x, container.y)
             val maxPoint = Vector2(container.x + container.width, container.y + container.height)
             simulator = KernelSimulator(minPoint, maxPoint)
-            //for(i in 1..25){
+            for(i in 1..25){
                 simulator.addKernel(createKernelView())
-            //}
+            }
 
             var previousMillis: Long = System.currentTimeMillis()
             GlobalScope.launch {
