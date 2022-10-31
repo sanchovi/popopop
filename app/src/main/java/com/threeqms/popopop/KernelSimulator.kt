@@ -1,18 +1,18 @@
 package com.threeqms.popopop
 
-import android.util.DisplayMetrics
+import android.hardware.*
 import android.view.View
-import androidx.annotation.FloatRange
 import java.util.*
-import android.app.Activity
 
-
-class KernelSimulator(boundsMin: Vector2, boundsMax: Vector2){
+class KernelSimulator(sm : SensorManager, boundsMin: Vector2, boundsMax: Vector2) : SensorEventListener {
+    val sensorManager : SensorManager = sm
     val kernels: MutableList<Kernel?> = mutableListOf()
     val freeIds: Queue<Int> = LinkedList<Int>(listOf())
     private val minBounds : Vector2 = boundsMin
     private  val maxBounds : Vector2 = boundsMax
     private val boundsSize : Vector2 =  maxBounds - minBounds
+    private var acceleration : Array<Float> = arrayOf(0f, 0f, 0f)
+    private var angularAcceleration : Array<Float> = arrayOf(0f, 0f, 0f)
 
 
     fun addKernel(kernelView: View, radiusRange : Vector2 = Vector2(80f, 100f)): Kernel {
@@ -32,7 +32,7 @@ class KernelSimulator(boundsMin: Vector2, boundsMax: Vector2){
 
         if (!freeIds.isEmpty()) {
             val id: Int = freeIds.poll()
-            kernels[id] = kernel;
+            kernels[id] = kernel
         }
         else {
             kernels.add(kernel)
@@ -50,16 +50,14 @@ class KernelSimulator(boundsMin: Vector2, boundsMax: Vector2){
         // TODO get gyroscope/accelerometer movement
         // TODO apply a corresponding force to all of the kernels
 
-        // TODO have this motion be done inside the kernel class
         for (kernelOpt in kernels) {
             if (kernelOpt == null)
                 continue
             var kernel: Kernel = kernelOpt!!
 
-            kernelOpt.update(this, dt)
+            kernel.update(this, dt)
         }
 
-        // TODO update the positions and rotations of the views
         for (kernelOpt in kernels) {
             kernelOpt?.updateView()
         }
@@ -71,5 +69,51 @@ class KernelSimulator(boundsMin: Vector2, boundsMax: Vector2){
 
     fun getMinBounds(): Vector2 {
         return minBounds
+    }
+
+    fun getAcceleration(): Array<Float> {
+        return acceleration
+    }
+
+    fun getAngularAcceleration(): Array<Float> {
+        return angularAcceleration
+    }
+
+    override fun onSensorChanged(event: SensorEvent?) {
+        //https://developer.android.com/guide/topics/sensors/sensors_motion
+        if (event?.sensor!!.type == Sensor.TYPE_ACCELEROMETER) {
+            acceleration[0] = event.values[0]
+            acceleration[1] = event.values[1]
+            acceleration[2] = event.values[2]
+            //println("Updated acceleration values")
+        }
+        else if (event!!.sensor.type == Sensor.TYPE_GYROSCOPE) {
+            angularAcceleration[0] = event.values[0]
+            angularAcceleration[1] = event.values[1]
+            angularAcceleration[2] = event.values[2]
+            //println("Updated gyroscope values")
+        }
+//        else if (event?.sensor?.type == Sensor.TYPE_ROTATION_VECTOR) {
+//            // convert the rotation-vector to a 4x4 matrix. the matrix
+//            // is interpreted by Open GL as the inverse of the
+//            // rotation-vector, which is what we want.
+//            SensorManager.getRotationMatrixFromVector(
+//                mRotationMatrix , event.values);
+//        }
+    }
+
+    override fun onAccuracyChanged(event: Sensor?, accuracy: Int) {
+        return
+    }
+
+    fun start() {
+        // enable our sensor when the activity is resumed, ask for
+        // 10 ms updates.
+        sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), 10000)
+    }
+
+    fun stop() {
+        // make sure to turn our sensor off when the activity is paused
+        sensorManager.unregisterListener(this)
     }
 }

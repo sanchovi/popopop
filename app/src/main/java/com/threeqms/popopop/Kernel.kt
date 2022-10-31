@@ -7,8 +7,8 @@ import com.threeqms.popopop.KernelSimulator
 class Kernel(pos : Vector2, r : Float, v : View, startVel : Vector2, startAngVel : Float) {
 
     companion object {
-        val GRAVITY = 100f
-        val ELASTICITY = 0.9f
+        val ELASTICITY = 0.97f
+        val ACCELEROMETER_MULTIPLIER = 100f;
     }
     
     val view : View = v
@@ -35,7 +35,7 @@ class Kernel(pos : Vector2, r : Float, v : View, startVel : Vector2, startAngVel
     }
 
     fun update(ks: KernelSimulator, dt : Float){
-        velocity += Vector2(0f, GRAVITY) * dt
+        velocity += Vector2(-ks.getAcceleration()[0] * ACCELEROMETER_MULTIPLIER, + ks.getAcceleration()[1] * ACCELEROMETER_MULTIPLIER) * dt
         val newPos : Vector2 = position + velocity * dt
 
         var yTime : Float = 1f

@@ -1,6 +1,8 @@
 package com.threeqms.popopop
 
 import android.content.Context
+import android.hardware.Sensor
+import android.hardware.SensorManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +20,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var simulator: KernelSimulator
     private var isRunning: Boolean = false
 
+    private lateinit var sensorManager:SensorManager
+    private lateinit var accelerometer :Sensor
+    private lateinit var gyroscope :Sensor
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -27,15 +33,23 @@ class MainActivity : AppCompatActivity() {
 
         container = findViewById<FrameLayout>(R.id.frameLayout)
 
+
     }
 
     override fun onStart() {
         super.onStart()
+        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
 
+        //Initiate KernelSimulator
         container.post(Runnable{
             val minPoint = Vector2(container.x, container.y)
             val maxPoint = Vector2(container.x + container.width, container.y + container.height)
-            simulator = KernelSimulator(minPoint, maxPoint)
+
+
+            simulator = KernelSimulator(sensorManager, minPoint, maxPoint)
+
             for(i in 1..25){
                 simulator.addKernel(createKernelView())
             }
@@ -51,7 +65,7 @@ class MainActivity : AppCompatActivity() {
                         dtMillis = 67
                     var previousMillis = currentMillis
 
-                    simulator.simulate(dtMillis / 1000.0f)
+                    simulator?.simulate(dtMillis / 1000.0f)
 
                     currentMillis = System.currentTimeMillis()
                     var desiredWaitTime: Long = 16 - (currentMillis - previousMillis)
@@ -59,6 +73,20 @@ class MainActivity : AppCompatActivity() {
                         delay(desiredWaitTime)
                 }
             }
+        })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        container.post(Runnable{
+            simulator.start()
+        })
+    }
+
+    override fun onPause() {
+        super.onPause()
+        container.post(Runnable{
+            simulator.stop()
         })
     }
 
