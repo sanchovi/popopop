@@ -14,4 +14,12 @@
 
     </FrameLayout>
 
+    <Button
+        android:id="@+id/spawnButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/spawn_kernel"
+        app:layout_anchor="@+id/frameLayout"
+        app:layout_anchorGravity="bottom|center" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

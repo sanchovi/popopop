@@ -19,6 +19,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var container: FrameLayout
     private lateinit var simulator: KernelSimulator
     private var isRunning: Boolean = false
+    private var isButtonPressed: Boolean = false
+    private var kernelTempView : View? = null
 
     private lateinit var sensorManager:SensorManager
     private lateinit var accelerometer :Sensor
@@ -32,8 +34,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         container = findViewById<FrameLayout>(R.id.frameLayout)
-
-
+        binding.spawnButton.setOnClickListener{
+            if(!isButtonPressed) {
+                isButtonPressed = true
+                kernelTempView = createKernelView()
+            }
+        }
     }
 
     override fun onStart() {
@@ -47,10 +53,9 @@ class MainActivity : AppCompatActivity() {
             val minPoint = Vector2(container.x, container.y)
             val maxPoint = Vector2(container.x + container.width, container.y + container.height)
 
-
             simulator = KernelSimulator(sensorManager, minPoint, maxPoint)
 
-            for(i in 1..25){
+            for(i in 1..3){
                 simulator.addKernel(createKernelView())
             }
 
@@ -71,6 +76,11 @@ class MainActivity : AppCompatActivity() {
                     var desiredWaitTime: Long = 16 - (currentMillis - previousMillis)
                     if (desiredWaitTime > 0)
                         delay(desiredWaitTime)
+                    if(kernelTempView != null && isButtonPressed) {
+                        simulator.addKernel(kernelTempView!!)
+                        isButtonPressed = false
+                        kernelTempView = null
+                    }
                 }
             }
         })
@@ -96,5 +106,4 @@ class MainActivity : AppCompatActivity() {
         container.addView(view)
         return view
     }
-
 }
