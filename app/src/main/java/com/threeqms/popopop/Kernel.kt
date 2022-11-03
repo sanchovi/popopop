@@ -36,6 +36,12 @@ class Kernel(pos : Vector2, r : Float, v : View, startVel : Vector2, startAngVel
 
     fun update(ks: KernelSimulator, dt : Float){
         velocity += Vector2(-ks.getAcceleration()[0] * ACCELEROMETER_MULTIPLIER, + ks.getAcceleration()[1] * ACCELEROMETER_MULTIPLIER) * dt
+        if(position.x.isNaN() || position.y.isNaN() || velocity.x.isNaN() || velocity.y.isNaN()){
+            position.x = 0f
+            position.y = 0f
+            velocity.x = 0f
+            velocity.y = 0f
+        }
         val newPos : Vector2 = position + velocity * dt
 
         var yTime : Float = 1f
