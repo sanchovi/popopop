@@ -4,21 +4,18 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import androidx.navigation.NavController
 
-class Gameplay : AppCompatActivity() {
-
-    private lateinit var navController: NavController
+class Start : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_gameplay)
+        setContentView(R.layout.activity_start)
 
         val b1 = findViewById<View>(R.id.shop_button)
 
         b1.setOnClickListener {
-            val shop = Intent(this@Gameplay, Shop::class.java)
-            startActivity(shop)
+            val gameplay = Intent(this@Start, MainActivity::class.java)
+            startActivity(gameplay)
         }
 
 
@@ -28,6 +25,6 @@ class Gameplay : AppCompatActivity() {
      * Enables back button support. Simply navigates one element up on the stack.
      */
     override fun onSupportNavigateUp(): Boolean {
-        return navController.navigateUp() || super.onSupportNavigateUp()
+        return super.onSupportNavigateUp()
     }
 }

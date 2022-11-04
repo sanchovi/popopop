@@ -22,4 +22,15 @@
         app:layout_anchor="@+id/frameLayout"
         app:layout_anchorGravity="bottom|center" />
 
+    <Button
+        android:id="@+id/shop_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Shop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

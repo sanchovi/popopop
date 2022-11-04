@@ -1,6 +1,7 @@
 package com.threeqms.popopop
 
 import android.content.Context
+import android.content.Intent
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.os.Bundle
@@ -39,6 +40,13 @@ class MainActivity : AppCompatActivity() {
                 isButtonPressed = true
                 kernelTempView = createKernelView()
             }
+        }
+
+        val b1 = findViewById<View>(R.id.shop_button)
+
+        b1.setOnClickListener {
+            val shop = Intent(this@MainActivity, Shop::class.java)
+            startActivity(shop)
         }
     }
 
