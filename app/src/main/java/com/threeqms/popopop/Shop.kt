@@ -10,7 +10,11 @@ class Shop : AppCompatActivity() {
         setContentView(R.layout.activity_shop)
     }
 
+
+
     override fun onSupportNavigateUp(): Boolean {
         return super.onSupportNavigateUp()
     }
 }
+
+

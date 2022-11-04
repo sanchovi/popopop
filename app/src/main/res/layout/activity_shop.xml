@@ -6,59 +6,78 @@
     android:layout_height="match_parent"
     tools:context=".Shop">
 
-    <TextView
-        android:id="@+id/shop_header"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        android:layout_marginLeft="36dp"
-        android:text="Shop"
-        android:textSize="36sp"
+    <FrameLayout
+        android:id="@+id/shop_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/item_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
-        android:layout_marginLeft="36dp"
-        android:text="Item 1"
-        android:textSize="24sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/shop_header" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/shop_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
 
-    <TextView
-        android:id="@+id/item_1_level_1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginLeft="36dp"
-        android:text="Buy - Level 1"
-        android:textSize="18sp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/item_1" />
-
-    <TextView
-        android:id="@+id/item_1_level_2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginLeft="8dp"
-        android:text="Buy - Level 2"
-        android:textSize="18sp"
-        app:layout_constraintLeft_toRightOf="@id/item_1_level_1"
-        app:layout_constraintTop_toBottomOf="@id/item_1" />
-
-    <TextView
-        android:id="@+id/item_1_level_3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginLeft="8dp"
-        android:text="Buy - Level 3"
-        android:textSize="18sp"
-        app:layout_constraintLeft_toRightOf="@id/item_1_level_2"
-        app:layout_constraintTop_toBottomOf="@id/item_1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+<!--    <TextView-->
+<!--        android:id="@+id/shop_header"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="36dp"-->
+<!--        android:layout_marginLeft="36dp"-->
+<!--        android:text="Shop"-->
+<!--        android:textSize="36sp"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/item_1"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="18dp"-->
+<!--        android:layout_marginLeft="36dp"-->
+<!--        android:text="Item 1"-->
+<!--        android:textSize="24sp"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/shop_header" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/item_1_level_1"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="12dp"-->
+<!--        android:layout_marginLeft="36dp"-->
+<!--        android:text="Buy - Level 1"-->
+<!--        android:textSize="18sp"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/item_1" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/item_1_level_2"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="12dp"-->
+<!--        android:layout_marginLeft="8dp"-->
+<!--        android:text="Buy - Level 2"-->
+<!--        android:textSize="18sp"-->
+<!--        app:layout_constraintLeft_toRightOf="@id/item_1_level_1"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/item_1" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/item_1_level_3"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="12dp"-->
+<!--        android:layout_marginLeft="8dp"-->
+<!--        android:text="Buy - Level 3"-->
+<!--        android:textSize="18sp"-->
+<!--        app:layout_constraintLeft_toRightOf="@id/item_1_level_2"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/item_1" />-->
+
