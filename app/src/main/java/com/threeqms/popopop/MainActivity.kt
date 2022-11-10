@@ -22,6 +22,7 @@ class MainActivity : AppCompatActivity() {
     private var isRunning: Boolean = false
     private var isButtonPressed: Boolean = false
     private var kernelTempView : View? = null
+//    private val workManager = WorkManager.getInstance(application)
 
     private lateinit var sensorManager:SensorManager
     private lateinit var accelerometer :Sensor
@@ -106,7 +107,13 @@ class MainActivity : AppCompatActivity() {
         container.post(Runnable{
             simulator.stop()
         })
+//        scheduleReminder(5, TimeUnit.SECONDS)
     }
+
+//    override fun onStop() {
+//        super.onStop()
+////        scheduleReminder(5, TimeUnit.SECONDS)
+//    }
 
     fun createKernelView() : View
     {
@@ -114,4 +121,17 @@ class MainActivity : AppCompatActivity() {
         container.addView(view)
         return view
     }
+
+
+//    internal fun scheduleReminder(
+//        duration: Long,
+//        unit: TimeUnit,
+//    ) {
+//        //Generate a OneTimeWorkRequest with the passed in duration and time unit
+//        val pushNotifRequest = OneTimeWorkRequestBuilder<NotificationWorker>().setInitialDelay(duration, unit).build()
+//
+//        //enqueue the work
+//        workManager.enqueue(pushNotifRequest)
+//
+//    }
 }

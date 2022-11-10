@@ -1,7 +1,5 @@
 package com.threeqms.popopop
 
-import android.graphics.drawable.Drawable
-
 data class KernelTypeDef(
     val name: String = "",
     val drawablePopped: Int = 0,
