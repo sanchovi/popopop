@@ -1,10 +1,13 @@
 package com.threeqms.popopop
 
+import android.graphics.drawable.Drawable
 import android.view.View
+import android.widget.ImageView
+import androidx.core.view.isVisible
 import kotlin.math.roundToInt
 import com.threeqms.popopop.KernelSimulator
 
-class Kernel(pos : Vector2, r : Float, v : View, startVel : Vector2, startAngVel : Float) {
+class Kernel(pos : Vector2, r : Float, v : View, startVel : Vector2, startAngVel : Float, unpoppedDrawable: Drawable, poppedDrawable: Drawable) {
 
     companion object {
         val ELASTICITY = 0.97f
@@ -20,6 +23,8 @@ class Kernel(pos : Vector2, r : Float, v : View, startVel : Vector2, startAngVel
     val angularVelocity : Float = startAngVel
     val popProgress : Float = 0f
     val mass : Float = 1f
+    val unpopped: Drawable = unpoppedDrawable
+    val poppedDrawable: Drawable = poppedDrawable
 
     init {
         updateView()
@@ -27,6 +32,8 @@ class Kernel(pos : Vector2, r : Float, v : View, startVel : Vector2, startAngVel
 
     fun updateView()
     {
+        view.findViewById<ImageView>(R.id.kernelImage).setImageDrawable(unpopped)
+        view.isVisible = true;
         view.layoutParams.width = (2 * radius).roundToInt()
         view.layoutParams.height = (2 * radius).roundToInt()
         view.x = (position.x - radius)

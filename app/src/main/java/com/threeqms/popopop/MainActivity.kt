@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import com.threeqms.popopop.databinding.ActivityMainBinding
 import kotlinx.coroutines.*
 
@@ -38,7 +39,10 @@ class MainActivity : AppCompatActivity() {
         binding.spawnButton.setOnClickListener{
             if(!isButtonPressed) {
                 isButtonPressed = true
+
                 kernelTempView = createKernelView()
+
+                kernelTempView!!.isVisible = false;
             }
         }
 
@@ -61,14 +65,14 @@ class MainActivity : AppCompatActivity() {
             val minPoint = Vector2(container.x, container.y)
             val maxPoint = Vector2(container.x + container.width, container.y + container.height)
 
-            simulator = KernelSimulator(sensorManager, minPoint, maxPoint)
+            simulator = KernelSimulator(sensorManager, minPoint, maxPoint, this)
 
             for(i in 1..3){
-                simulator.addKernel(createKernelView())
+                simulator.addKernel(createKernelView(), KernelData.KernelTypes[0])
             }
 
             var previousMillis: Long = System.currentTimeMillis()
-            GlobalScope.launch {
+            MainScope().launch {
                 isRunning = true
 
                 while (isRunning) {
@@ -85,7 +89,8 @@ class MainActivity : AppCompatActivity() {
                     if (desiredWaitTime > 0)
                         delay(desiredWaitTime)
                     if(kernelTempView != null && isButtonPressed) {
-                        simulator.addKernel(kernelTempView!!)
+                        // TODO: add logic to choose from available non spawned kernel types
+                        simulator.addKernel(kernelTempView!!, KernelData.KernelTypes[0])
                         isButtonPressed = false
                         kernelTempView = null
                     }

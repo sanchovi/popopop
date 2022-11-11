@@ -1,13 +1,17 @@
 package com.threeqms.popopop
 
+import android.app.Activity
+import android.content.res.Resources
+import android.content.res.Resources.Theme
 import android.hardware.*
 import android.view.View
 import java.util.*
 
-class KernelSimulator(sm : SensorManager, boundsMin: Vector2, boundsMax: Vector2) : SensorEventListener {
+class KernelSimulator(sm : SensorManager, boundsMin: Vector2, boundsMax: Vector2, act: Activity) : SensorEventListener {
     val sensorManager : SensorManager = sm
     val kernels: MutableList<Kernel?> = mutableListOf()
     val freeIds: Queue<Int> = LinkedList<Int>(listOf())
+    val activity: Activity = act
     private val minBounds : Vector2 = boundsMin
     private  val maxBounds : Vector2 = boundsMax
     private val boundsSize : Vector2 =  maxBounds - minBounds
@@ -15,11 +19,11 @@ class KernelSimulator(sm : SensorManager, boundsMin: Vector2, boundsMax: Vector2
     private var angularAcceleration : Array<Float> = arrayOf(0f, 0f, 0f)
 
 
-    fun addKernel(kernelView: View, radiusRange : Vector2 = Vector2(80f, 100f)): Kernel {
+    fun addKernel(kernelView: View, kernelType: KernelTypeDef): Kernel {
         val randomX = minBounds.x + Math.random().toFloat() * boundsSize.x
         val randomY = minBounds.y + Math.random().toFloat() * boundsSize.y / 2
 
-        val randomRadius = radiusRange.x + Math.random().toFloat() * (radiusRange.y - radiusRange.x)
+        val randomRadius = kernelType.size + Math.random().toFloat() * kernelType.sizeDeviation * 2 - kernelType.sizeDeviation
 
         //TODO: add global constants for minStart speed and maxStartSpeed
         val randomStartSpeed = 100f + Math.random().toFloat() * 200f
@@ -27,7 +31,17 @@ class KernelSimulator(sm : SensorManager, boundsMin: Vector2, boundsMax: Vector2
         val randomStartVelocity = randomDirection * randomStartSpeed
 
         val randomAngular = -45f + Math.random().toFloat() * 90f
-        val kernel = Kernel(Vector2(randomX, randomY), randomRadius, kernelView, randomStartVelocity, randomAngular)
+
+        val res : Resources = Resources.getSystem()
+        val theme : Theme = res.newTheme()
+        val kernel =
+            Kernel(Vector2(randomX, randomY),
+            randomRadius,
+            kernelView,
+            randomStartVelocity,
+            randomAngular,
+            res.getDrawable(kernelType.drawableUnpopped, theme),
+            res.getDrawable(kernelType.drawablePopped, theme))
 
 
         if (!freeIds.isEmpty()) {
@@ -47,15 +61,17 @@ class KernelSimulator(sm : SensorManager, boundsMin: Vector2, boundsMax: Vector2
     }
 
     fun simulate(dt: Float) {
-        // TODO get gyroscope/accelerometer movement
-        // TODO apply a corresponding force to all of the kernels
 
-        val kernelInterator : Iterator<Kernel?> = kernels.iterator()
-        while (kernelInterator.hasNext()){
-            var kernel: Kernel? = kernelInterator.next()
-            kernel?.update(this, dt)
-            kernel?.updateView()
+        for (kernelOpt in kernels) {
+            if (kernelOpt == null)
+                continue
+            var kernel: Kernel = kernelOpt!!
+
+            kernel.update(this, dt)
         }
+
+        for (kernelOpt in kernels)
+            kernelOpt?.updateView()
     }
 
     fun getMaxBounds(): Vector2 {
