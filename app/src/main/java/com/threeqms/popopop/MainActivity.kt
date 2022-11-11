@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.threeqms.popopop.databinding.ActivityMainBinding
@@ -20,6 +21,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var inflater: LayoutInflater
     private lateinit var container: FrameLayout
     private lateinit var simulator: KernelSimulator
+    private lateinit var kernelStorage: KernelStorage
     private var isRunning: Boolean = false
     private var isButtonPressed: Boolean = false
     private var kernelTempView : View? = null
@@ -40,9 +42,9 @@ class MainActivity : AppCompatActivity() {
         binding.spawnButton.setOnClickListener{
             if(!isButtonPressed) {
                 isButtonPressed = true
-
-                kernelTempView = createKernelView()
-
+                if(kernelTempView == null) {
+                    kernelTempView = createKernelView()
+                }
                 kernelTempView!!.isVisible = false;
             }
         }
@@ -61,6 +63,9 @@ class MainActivity : AppCompatActivity() {
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
 
+        kernelStorage = KernelStorage(this@MainActivity)
+        kernelStorage.initialize()
+
         //Initiate KernelSimulator
         container.post(Runnable{
             val minPoint = Vector2(container.x, container.y)
@@ -68,8 +73,10 @@ class MainActivity : AppCompatActivity() {
 
             simulator = KernelSimulator(sensorManager, minPoint, maxPoint, this)
 
-            for(i in 1..3){
-                simulator.addKernel(createKernelView(), KernelData.KernelTypes[0])
+            for(i in 0 until kernelStorage.kernels.size){
+                for(j in 0 until kernelStorage.kernels[i].numAdded){
+                    simulator.addKernel(createKernelView(), KernelData.KernelTypes[i])
+                }
             }
 
             var previousMillis: Long = System.currentTimeMillis()
@@ -89,11 +96,26 @@ class MainActivity : AppCompatActivity() {
                     var desiredWaitTime: Long = 16 - (currentMillis - previousMillis)
                     if (desiredWaitTime > 0)
                         delay(desiredWaitTime)
+                    //Delayed button press
                     if(kernelTempView != null && isButtonPressed) {
-                        // TODO: add logic to choose from available non spawned kernel types
-                        simulator.addKernel(kernelTempView!!, KernelData.KernelTypes[0])
+                        var kernelId : Int = -1
+                        for(i in 0 until kernelStorage.kernels.size){
+                            if(kernelStorage.kernels[i].numOwned > kernelStorage.kernels[i].numAdded){
+                                kernelId = i
+                                break
+                            }
+                        }
+                        if(kernelId == -1){
+                            val toast = Toast.makeText(applicationContext, "You're out of kernels. Pop some or buy more from the shop!", Toast.LENGTH_LONG)
+                            toast.show()
+                        }
+                        else {
+                            kernelStorage.kernels[kernelId].numAdded++
+                            kernelStorage.saveKernelsToPrefs()
+                            simulator.addKernel(kernelTempView!!, KernelData.KernelTypes[kernelId])
+                            kernelTempView = null
+                        }
                         isButtonPressed = false
-                        kernelTempView = null
                     }
                 }
             }

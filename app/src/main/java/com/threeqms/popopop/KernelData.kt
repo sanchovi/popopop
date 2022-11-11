@@ -11,7 +11,7 @@ object KernelData {
                 5,
                 40,
                 10f,
-                10f,
+                100f,
             ) ,
 
             KernelTypeDef(
@@ -21,7 +21,7 @@ object KernelData {
                 10,
                 50,
                 10f,
-                10f,
+                100f,
             ),
 
             KernelTypeDef(
@@ -31,7 +31,7 @@ object KernelData {
                 30,
                 30,
                 5f,
-                20f,
+                200f,
             ),
 
             KernelTypeDef(
@@ -41,7 +41,7 @@ object KernelData {
                 30,
                 30,
                 5f,
-                20f,
+                200f,
             )
 
 

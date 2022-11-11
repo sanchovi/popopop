@@ -32,16 +32,16 @@ class KernelSimulator(sm : SensorManager, boundsMin: Vector2, boundsMax: Vector2
 
         val randomAngular = -45f + Math.random().toFloat() * 90f
 
-        val res : Resources = Resources.getSystem()
-        val theme : Theme = res.newTheme()
+        val theme : Theme = activity.resources.newTheme()
         val kernel =
             Kernel(Vector2(randomX, randomY),
             randomRadius,
             kernelView,
             randomStartVelocity,
             randomAngular,
-            res.getDrawable(kernelType.drawableUnpopped, theme),
-            res.getDrawable(kernelType.drawablePopped, theme))
+                kernelType.popTime,
+                activity.resources.getDrawable(kernelType.drawableUnpopped, theme),
+                activity.resources.getDrawable(kernelType.drawablePopped, theme))
 
 
         if (!freeIds.isEmpty()) {

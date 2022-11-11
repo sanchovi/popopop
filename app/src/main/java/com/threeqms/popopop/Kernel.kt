@@ -6,12 +6,15 @@ import android.widget.ImageView
 import androidx.core.view.isVisible
 import kotlin.math.roundToInt
 import com.threeqms.popopop.KernelSimulator
+import java.util.Vector
 
-class Kernel(pos : Vector2, r : Float, v : View, startVel : Vector2, startAngVel : Float, unpoppedDrawable: Drawable, poppedDrawable: Drawable) {
+class Kernel(pos : Vector2, r : Float, v : View, startVel : Vector2, startAngVel : Float, popTime : Float, unpoppedDrawable: Drawable, poppedDrawable: Drawable) {
 
     companion object {
         val ELASTICITY = 0.97f
         val ACCELEROMETER_MULTIPLIER = 100f;
+        val POP_PROGRESS_PER_UNIT_MOVED = 0.005f;
+        val POP_PROGRESS_PER_COLLISION_FORCE = 0.001f;
     }
     
     val view : View = v
@@ -21,9 +24,9 @@ class Kernel(pos : Vector2, r : Float, v : View, startVel : Vector2, startAngVel
     val radius : Float = r
     val velocity : Vector2 = startVel
     val angularVelocity : Float = startAngVel
-    val popProgress : Float = 0f
+    var popProgress : Float = popTime
     val mass : Float = 1f
-    val unpopped: Drawable = unpoppedDrawable
+    val unpoppedDrawable: Drawable = unpoppedDrawable
     val poppedDrawable: Drawable = poppedDrawable
 
     init {
@@ -32,7 +35,10 @@ class Kernel(pos : Vector2, r : Float, v : View, startVel : Vector2, startAngVel
 
     fun updateView()
     {
-        view.findViewById<ImageView>(R.id.kernelImage).setImageDrawable(unpopped)
+        if(popProgress > 0)
+            view.findViewById<ImageView>(R.id.kernelImage).setImageDrawable(unpoppedDrawable)
+        else
+            view.findViewById<ImageView>(R.id.kernelImage).setImageDrawable(poppedDrawable)
         view.isVisible = true;
         view.layoutParams.width = (2 * radius).roundToInt()
         view.layoutParams.height = (2 * radius).roundToInt()
@@ -43,36 +49,38 @@ class Kernel(pos : Vector2, r : Float, v : View, startVel : Vector2, startAngVel
 
     fun update(ks: KernelSimulator, dt : Float){
         velocity += Vector2(-ks.getAcceleration()[0] * ACCELEROMETER_MULTIPLIER, + ks.getAcceleration()[1] * ACCELEROMETER_MULTIPLIER) * dt
-        if(position.x.isNaN() || position.y.isNaN() || velocity.x.isNaN() || velocity.y.isNaN()){
-            position.x = 0f
-            position.y = 0f
-            velocity.x = 0f
-            velocity.y = 0f
-        }
+//        if(position.x.isNaN() || position.y.isNaN() || velocity.x.isNaN() || velocity.y.isNaN()){
+//            position.x = 0f
+//            position.y = 0f
+//            velocity.x = 0f
+//            velocity.y = 0f
+//        }
         val newPos : Vector2 = position + velocity * dt
 
         var yTime : Float = 1f
         //Find the percentage of the velocity it takes to collide with the wall. Can also be negative. (Botton)
-        if(velocity.y > 0){
+        if(velocity.y > 0 && newPos.y - position.y != 0f){
             yTime = (ks.getMaxBounds().y - (position.y + radius)) / (newPos.y - position.y)
         }
         //(Top)
-        if(velocity.y < 0){
+        if(velocity.y < 0 && newPos.y - position.y != 0f){
             yTime = (ks.getMinBounds().y - (position.y - radius)) / (newPos.y - position.y)
         }
 
         var xTime : Float = 1f
         //Find the percentage of the velocity it takes to collide with the wall. Can also be negative. (Right)
-        if(velocity.x > 0){
+        if(velocity.x > 0 && newPos.x - position.x != 0f){
             xTime = (ks.getMaxBounds().x - (position.x + radius)) / (newPos.x - position.x)
         }
         //(Left)
-        if(velocity.x < 0){
+        if(velocity.x < 0 && newPos.x - position.x != 0f){
             xTime = (ks.getMinBounds().x - (position.x - radius)) / (newPos.x - position.x)
         }
         //Use percentage of velocity to place next to wall but not past it
         if(yTime < 1 || xTime < 1){
-            position += Math.min(yTime, xTime) * velocity * dt
+            updatePosition(Math.min(yTime, xTime) * velocity * dt)
+            val oldVelocity : Vector2 = Vector2(velocity.x, velocity.y)
+
             if(yTime == Math.min(yTime, xTime)){
                 velocity *= Vector2(1f, -1f) * ELASTICITY
 
@@ -80,11 +88,18 @@ class Kernel(pos : Vector2, r : Float, v : View, startVel : Vector2, startAngVel
             if(xTime == Math.min(yTime, xTime)){
                 velocity *= Vector2(-1f, 1f) * ELASTICITY
             }
+            popProgress -= (velocity - oldVelocity).magnitude() * POP_PROGRESS_PER_COLLISION_FORCE
         }
         else{
-            position +=  velocity * dt
+            updatePosition(velocity * dt)
+
         }
 
         rotation += angularVelocity * dt
+    }
+
+    fun updatePosition(delta : Vector2){
+        position += delta
+        popProgress -= delta.magnitude() * POP_PROGRESS_PER_UNIT_MOVED
     }
 }
