@@ -50,16 +50,11 @@ class KernelSimulator(sm : SensorManager, boundsMin: Vector2, boundsMax: Vector2
         // TODO get gyroscope/accelerometer movement
         // TODO apply a corresponding force to all of the kernels
 
-        for (kernelOpt in kernels) {
-            if (kernelOpt == null)
-                continue
-            var kernel: Kernel = kernelOpt!!
-
-            kernel.update(this, dt)
-        }
-
-        for (kernelOpt in kernels) {
-            kernelOpt?.updateView()
+        val kernelInterator : Iterator<Kernel?> = kernels.iterator()
+        while (kernelInterator.hasNext()){
+            var kernel: Kernel? = kernelInterator.next()
+            kernel?.update(this, dt)
+            kernel?.updateView()
         }
     }
 
