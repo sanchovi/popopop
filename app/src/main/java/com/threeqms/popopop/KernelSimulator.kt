@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.res.Resources
 import android.content.res.Resources.Theme
 import android.hardware.*
+import android.media.MediaPlayer
 import android.view.View
 import java.util.*
 
@@ -17,7 +18,7 @@ class KernelSimulator(sm : SensorManager, boundsMin: Vector2, boundsMax: Vector2
     private val boundsSize : Vector2 =  maxBounds - minBounds
     private var acceleration : Array<Float> = arrayOf(0f, 0f, 0f)
     private var angularAcceleration : Array<Float> = arrayOf(0f, 0f, 0f)
-
+    private val mp : MediaPlayer = MediaPlayer.create(act, R.raw.pop);
 
     fun addKernel(kernelView: View, kernelType: KernelTypeDef): Kernel {
         val randomX = minBounds.x + Math.random().toFloat() * boundsSize.x
@@ -41,7 +42,8 @@ class KernelSimulator(sm : SensorManager, boundsMin: Vector2, boundsMax: Vector2
             randomAngular,
                 kernelType.popTime,
                 activity.resources.getDrawable(kernelType.drawableUnpopped, theme),
-                activity.resources.getDrawable(kernelType.drawablePopped, theme))
+                activity.resources.getDrawable(kernelType.drawablePopped, theme),
+            mp)
 
 
         if (!freeIds.isEmpty()) {

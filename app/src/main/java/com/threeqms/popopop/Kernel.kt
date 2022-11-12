@@ -1,6 +1,7 @@
 package com.threeqms.popopop
 
 import android.graphics.drawable.Drawable
+import android.media.MediaPlayer
 import android.view.View
 import android.widget.ImageView
 import androidx.core.view.isVisible
@@ -8,13 +9,14 @@ import kotlin.math.roundToInt
 import com.threeqms.popopop.KernelSimulator
 import java.util.Vector
 
-class Kernel(pos : Vector2, r : Float, v : View, startVel : Vector2, startAngVel : Float, popTime : Float, unpoppedDrawable: Drawable, poppedDrawable: Drawable) {
+class Kernel(pos : Vector2, r : Float, v : View, startVel : Vector2, startAngVel : Float, popTime : Float, unpoppedDrawable: Drawable, poppedDrawable: Drawable, mp: MediaPlayer) {
 
     companion object {
         val ELASTICITY = 0.97f
         val ACCELEROMETER_MULTIPLIER = 100f;
         val POP_PROGRESS_PER_UNIT_MOVED = 0.005f;
         val POP_PROGRESS_PER_COLLISION_FORCE = 0.001f;
+        val POP_VELOCITY = 500f
     }
     
     val view : View = v
@@ -28,17 +30,15 @@ class Kernel(pos : Vector2, r : Float, v : View, startVel : Vector2, startAngVel
     val mass : Float = 1f
     val unpoppedDrawable: Drawable = unpoppedDrawable
     val poppedDrawable: Drawable = poppedDrawable
+    val mediaPlayer: MediaPlayer = mp
 
     init {
         updateView()
+        view.findViewById<ImageView>(R.id.kernelImage).setImageDrawable(unpoppedDrawable)
     }
 
     fun updateView()
     {
-        if(popProgress > 0)
-            view.findViewById<ImageView>(R.id.kernelImage).setImageDrawable(unpoppedDrawable)
-        else
-            view.findViewById<ImageView>(R.id.kernelImage).setImageDrawable(poppedDrawable)
         view.isVisible = true;
         view.layoutParams.width = (2 * radius).roundToInt()
         view.layoutParams.height = (2 * radius).roundToInt()
@@ -56,6 +56,7 @@ class Kernel(pos : Vector2, r : Float, v : View, startVel : Vector2, startAngVel
 //            velocity.y = 0f
 //        }
         val newPos : Vector2 = position + velocity * dt
+        val tempProgress = popProgress
 
         var yTime : Float = 1f
         //Find the percentage of the velocity it takes to collide with the wall. Can also be negative. (Botton)
@@ -92,14 +93,21 @@ class Kernel(pos : Vector2, r : Float, v : View, startVel : Vector2, startAngVel
         }
         else{
             updatePosition(velocity * dt)
-
         }
-
+        if(tempProgress > 0 && popProgress <= 0){
+            pop()
+        }
         rotation += angularVelocity * dt
     }
 
     fun updatePosition(delta : Vector2){
         position += delta
         popProgress -= delta.magnitude() * POP_PROGRESS_PER_UNIT_MOVED
+    }
+    fun pop(){
+        view.findViewById<ImageView>(R.id.kernelImage).setImageDrawable(poppedDrawable)
+        velocity += Vector2(1f, 0f).rotated(Math.random().toFloat() * 360) * POP_VELOCITY
+        mediaPlayer.setVolume(1 + Math.random().toFloat() * 2f, 1 + Math.random().toFloat() * 2f)
+        mediaPlayer.start()
     }
 }
