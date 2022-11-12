@@ -12,8 +12,7 @@ object KernelData {
                 40,
                 10f,
                 10f,
-            ) ,
-
+            ),
             KernelTypeDef(
                 "Cheese",
                 R.drawable.popcorn,
