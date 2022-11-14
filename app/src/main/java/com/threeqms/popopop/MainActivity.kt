@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.hardware.Sensor
 import android.hardware.SensorManager
-import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -40,8 +39,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sensorManager:SensorManager
     private lateinit var accelerometer :Sensor
     private lateinit var gyroscope :Sensor
-    private lateinit var mp :MediaPlayer
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
