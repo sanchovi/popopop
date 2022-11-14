@@ -6,7 +6,7 @@ object KernelData {
     val KernelTypes: List<KernelTypeDef> = listOf(
             KernelTypeDef(
                 "Basic",
-                R.drawable.popcorn,
+                R.drawable.basic_popcorn,
                 R.drawable.kernel,
                 5,
                 40,
@@ -16,7 +16,7 @@ object KernelData {
 
             KernelTypeDef(
                 "Cheese",
-                R.drawable.popcorn,
+                R.drawable.cheese_popcorn,
                 R.drawable.kernel,
                 10,
                 50,
@@ -26,7 +26,7 @@ object KernelData {
 
             KernelTypeDef(
                 "Cherry Blossom",
-                R.drawable.popcorn,
+                R.drawable.cherryblossom_popcorn,
                 R.drawable.kernel,
                 30,
                 30,
@@ -36,7 +36,7 @@ object KernelData {
 
             KernelTypeDef(
                 "Blue Raspberry",
-                R.drawable.popcorn,
+                R.drawable.blueraspberry_popcorn,
                 R.drawable.kernel,
                 30,
                 30,

@@ -1,10 +1,14 @@
 package com.threeqms.popopop
 
+import android.annotation.SuppressLint
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.hardware.Sensor
 import android.hardware.SensorManager
 import android.media.MediaPlayer
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,9 +16,14 @@ import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.work.Data
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.threeqms.popopop.databinding.ActivityMainBinding
 import kotlinx.coroutines.*
-
+import java.util.concurrent.TimeUnit
+import com.threeqms.popopop.PopReminderWorker
 
 class MainActivity : AppCompatActivity() {
 
@@ -58,6 +67,19 @@ class MainActivity : AppCompatActivity() {
             val shop = Intent(this@MainActivity, Shop::class.java)
             startActivity(shop)
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            // Create the NotificationChannel
+            val name = "popChannel"
+            val descriptionText = "popChannelDesc"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val mChannel = NotificationChannel("pop_channel_id", name, importance)
+            mChannel.description = descriptionText
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(mChannel)
+        }
+
     }
 
     override fun onStart() {
@@ -137,7 +159,12 @@ class MainActivity : AppCompatActivity() {
         container.post(Runnable{
             simulator.stop()
         })
-//        scheduleReminder(5, TimeUnit.SECONDS)
+        scheduleReminder(2, TimeUnit.SECONDS)
+    }
+
+    override fun onStop() {
+        scheduleReminder(2, TimeUnit.SECONDS)
+        super.onStop()
     }
 
 //    override fun onStop() {
@@ -152,16 +179,18 @@ class MainActivity : AppCompatActivity() {
         return view
     }
 
+    private val workManager = WorkManager.getInstance(application)
 
-//    internal fun scheduleReminder(
-//        duration: Long,
-//        unit: TimeUnit,
-//    ) {
-//        //Generate a OneTimeWorkRequest with the passed in duration and time unit
-//        val pushNotifRequest = OneTimeWorkRequestBuilder<NotificationWorker>().setInitialDelay(duration, unit).build()
-//
-//        //enqueue the work
-//        workManager.enqueue(pushNotifRequest)
-//
-//    }
+    @SuppressLint("RestrictedApi")
+    internal fun scheduleReminder(
+        duration: Long,
+        unit: TimeUnit,
+    ) {
+
+
+        val pushNotifRequest = OneTimeWorkRequestBuilder<PopReminderWorker>().setInitialDelay(duration, unit).build()
+
+        workManager.enqueue(pushNotifRequest)
+
+    }
 }
