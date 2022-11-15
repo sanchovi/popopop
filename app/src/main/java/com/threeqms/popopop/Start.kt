@@ -21,9 +21,6 @@ class Start : AppCompatActivity() {
 
     }
 
-    /**
-     * Enables back button support. Simply navigates one element up on the stack.
-     */
     override fun onSupportNavigateUp(): Boolean {
         return super.onSupportNavigateUp()
     }
