@@ -76,7 +76,7 @@ class ShopCardAdapter(
         holder.kernelName.text = item.name
 
         // set kernel price
-        holder.kernelPrice.text = "Price" + item.price.toString()
+        holder.kernelPrice.text = "Price: " + item.price.toString()
 
         holder.kernelInventory.text = "You Own: " + kernelStorage.kernels[position].numOwned.toString()
 
