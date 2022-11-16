@@ -1,14 +1,9 @@
 package com.threeqms.popopop
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.View
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.app.AppCompatActivity
 import com.threeqms.popopop.adapter.ShopCardAdapter
-import com.threeqms.popopop.databinding.ActivityMainBinding
 import com.threeqms.popopop.databinding.ActivityShopBinding
-import com.threeqms.popopop.databinding.ShopSegmentBinding
 
 class Shop : AppCompatActivity() {
 
@@ -18,6 +13,9 @@ class Shop : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityShopBinding.inflate(layoutInflater)
+
+        var actionBar = supportActionBar
+        actionBar?.setDisplayHomeAsUpEnabled(true)
 
         setContentView(binding.root)
         kernelStorage = KernelStorage(this@Shop)
@@ -33,11 +31,11 @@ class Shop : AppCompatActivity() {
         }
     }
 
-
-
     override fun onSupportNavigateUp(): Boolean {
-        return super.onSupportNavigateUp()
+        onBackPressed()
+        return true
     }
+
 }
 
 
