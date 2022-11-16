@@ -11,4 +11,6 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="spawn_kernel">Spawn Kernel</string>
     <string name="kernel_count_key">kernels</string>
+    <string name="reset_kernels">Reset Kernels</string>
+    <string name="money_text">Money: Infinite (For testing purposes)</string>
 </resources>

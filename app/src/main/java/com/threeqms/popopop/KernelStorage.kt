@@ -14,7 +14,7 @@ class KernelStorage(a : Activity) {
     fun initialize(){
         kernels.clear()
 
-        val prefs : SharedPreferences = activityContext.getPreferences(Context.MODE_PRIVATE)
+        val prefs : SharedPreferences = activityContext.getSharedPreferences("kernels", Context.MODE_PRIVATE)
         val ledger : String? = prefs.getString(activityContext.getString(R.string.kernel_count_key), null)
         if(ledger != null){
             val gson = Gson()
@@ -43,9 +43,9 @@ class KernelStorage(a : Activity) {
         val gson : Gson = Gson()
         val ledgerString : String = gson.toJson(kernels)
 
-        val sharedPref = activityContext?.getPreferences(Context.MODE_PRIVATE) ?: return
+        val sharedPref = activityContext?.getSharedPreferences("kernels", Context.MODE_PRIVATE) ?: return
         with (sharedPref.edit()) {
-            putString(activityContext.getString(R.string.kernel_count_key), ledgerString)
+            putString(activityContext.getString(R.string.kernel_count_key), ledgerString).commit()
             apply()
         }
     }
@@ -57,6 +57,10 @@ class KernelStorage(a : Activity) {
                 kernels.add(i, KernelLedger(i, 0, 0))
             }
         }
+        saveKernelsToPrefs()
+    }
+    fun buyKernel(id: Int){
+        kernels[id].numOwned++
         saveKernelsToPrefs()
     }
 }

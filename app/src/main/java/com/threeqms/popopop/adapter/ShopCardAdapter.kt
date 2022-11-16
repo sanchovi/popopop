@@ -19,11 +19,13 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.threeqms.popopop.R
 import com.threeqms.popopop.KernelData
+import com.threeqms.popopop.KernelStorage
 
 /**
  * Adapter to inflate the appropriate list item layout and populate the view with information
@@ -31,10 +33,12 @@ import com.threeqms.popopop.KernelData
  */
 class ShopCardAdapter(
     private val context: Context?,
+    private val ks: KernelStorage,
 ): RecyclerView.Adapter<ShopCardAdapter.ShopCardViewHolder>() {
 
     // Initialize the data using the List found in data/DataSource
     val src = KernelData.KernelTypes
+    val kernelStorage = ks
 
     /**
      * Initialize view elements
@@ -44,7 +48,9 @@ class ShopCardAdapter(
         var kernelImage: ImageView = view!!.findViewById(R.id.kernelImage)
         var kernelName: TextView = view!!.findViewById(R.id.kernelNameText)
         var kernelPrice: TextView = view!!.findViewById(R.id.priceText)
+        var kernelInventory: TextView = view!!.findViewById(R.id.itemInventoryText)
 
+        var buyButton: Button = view!!.findViewById(R.id.buyButton)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopCardViewHolder {
@@ -70,6 +76,19 @@ class ShopCardAdapter(
         holder.kernelName.text = item.name
 
         // set kernel price
-        holder.kernelPrice.text = item.price.toString()
+        holder.kernelPrice.text = "Price" + item.price.toString()
+
+        holder.kernelInventory.text = "You Own: " + kernelStorage.kernels[position].numOwned.toString()
+
+        // Connect buy button to saved prefs
+        holder.buyButton.setOnClickListener{
+            kernelStorage.buyKernel(position)
+            holder.kernelInventory.text = "You Own: " + kernelStorage.kernels[position].numOwned.toString()
+        }
+    }
+    fun updateAllCards(){
+        for(i in 0 until src.size){
+            notifyItemChanged(i)
+        }
     }
 }

@@ -77,10 +77,6 @@ class MainActivity : AppCompatActivity() {
             notificationManager.createNotificationChannel(mChannel)
         }
 
-    }
-
-    override fun onStart() {
-        super.onStart()
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE)
@@ -144,6 +140,15 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    override fun onRestart() {
+        super.onRestart()
+        kernelStorage.initialize()
+    }
+
+    override fun onStart() {
+        super.onStart()
+    }
+
     override fun onResume() {
         super.onResume()
         container.post(Runnable{
@@ -156,7 +161,7 @@ class MainActivity : AppCompatActivity() {
         container.post(Runnable{
             simulator.stop()
         })
-        scheduleReminder(2, TimeUnit.SECONDS)
+        //scheduleReminder(2, TimeUnit.SECONDS)
     }
 
     override fun onStop() {

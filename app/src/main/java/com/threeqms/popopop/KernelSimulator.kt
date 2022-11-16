@@ -20,6 +20,8 @@ class KernelSimulator(sm : SensorManager, boundsMin: Vector2, boundsMax: Vector2
     private var angularAcceleration : Array<Float> = arrayOf(0f, 0f, 0f)
     private val mp : MediaPlayer = MediaPlayer.create(act, R.raw.pop);
 
+    private var isPaused : Boolean = false
+
     fun addKernel(kernelView: View, kernelType: KernelTypeDef): Kernel {
         val randomX = minBounds.x + Math.random().toFloat() * boundsSize.x
         val randomY = minBounds.y + Math.random().toFloat() * boundsSize.y / 2
@@ -64,6 +66,8 @@ class KernelSimulator(sm : SensorManager, boundsMin: Vector2, boundsMax: Vector2
 
     fun simulate(dt: Float) {
 
+        if(isPaused)
+            return
         for (kernelOpt in kernels) {
             if (kernelOpt == null)
                 continue
@@ -122,11 +126,13 @@ class KernelSimulator(sm : SensorManager, boundsMin: Vector2, boundsMax: Vector2
     fun start() {
         // enable our sensor when the activity is resumed, ask for
         // 10 ms updates.
+        isPaused = false
         sensorManager.registerListener(this, sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), 10000)
     }
 
     fun stop() {
         // make sure to turn our sensor off when the activity is paused
+        isPaused = true
         sensorManager.unregisterListener(this)
     }
 }

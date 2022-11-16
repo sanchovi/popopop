@@ -13,16 +13,24 @@ import com.threeqms.popopop.databinding.ShopSegmentBinding
 class Shop : AppCompatActivity() {
 
     private lateinit var binding: ActivityShopBinding
+    private lateinit var kernelStorage: KernelStorage
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityShopBinding.inflate(layoutInflater)
 
         setContentView(binding.root)
-        binding.shopRecycler.adapter = ShopCardAdapter(applicationContext)
+        kernelStorage = KernelStorage(this@Shop)
+        kernelStorage.initialize()
+
+        binding.shopRecycler.adapter = ShopCardAdapter(applicationContext, kernelStorage)
         // Specify fixed size to improve performance
         binding.shopRecycler.setHasFixedSize(true)
 
+        binding.resetButton.setOnClickListener{
+            kernelStorage.resetKernels()
+            (binding.shopRecycler.adapter as ShopCardAdapter).updateAllCards()
+        }
     }
 
 
