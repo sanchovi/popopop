@@ -18,6 +18,17 @@ class PopReminderWorker(
     val notificationId = 17
 
     override fun doWork(): Result {
+
+        val notifyIntent = Intent(this.applicationContext, MainActivity::class.java).apply {
+            var flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+
+        val notifyPendingIntent = PendingIntent.getActivity(
+            this.applicationContext, 0, notifyIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+
 //        val intent = Intent(applicationContext, MainActivity::class.java).apply {
 //            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
 //        }
@@ -31,6 +42,8 @@ class PopReminderWorker(
             .setContentText("It's time to pop!")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
+            .apply { setContentIntent(notifyPendingIntent) }
+
 
         with(NotificationManagerCompat.from(applicationContext)) {
             notify(notificationId, builder.build())

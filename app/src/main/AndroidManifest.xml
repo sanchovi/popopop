@@ -31,7 +31,12 @@
             android:name=".Shop"
             android:label="Back to Popping" >
         </activity>
-        <activity android:name=".MainActivity" > </activity>
+        <activity
+            android:name=".MainActivity"
+            android:launchMode="singleTask"
+            android:taskAffinity=""
+            android:excludeFromRecents="true">
+        </activity>
 
     </application>
 
